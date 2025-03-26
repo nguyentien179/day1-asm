@@ -129,7 +129,7 @@ internal class Program
             Console.Write("Enter Make to search: ");
             string make = Console.ReadLine();
             var results = cars.Where(car =>
-                    car.Make.Equals(make, StringComparison.OrdinalIgnoreCase)
+                    car.Make.IndexOf(make, StringComparison.OrdinalIgnoreCase) >= 0
                 )
                 .ToList();
 
