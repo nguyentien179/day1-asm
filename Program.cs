@@ -185,20 +185,36 @@ internal class Program
 
         static void RemoveCarByModel()
         {
-            Console.Write("Enter Model to remove: ");
-            string model = Console.ReadLine();
-            var carToRemove = cars.FirstOrDefault(car =>
-                car.Model.Equals(model, StringComparison.OrdinalIgnoreCase)
-            );
-
-            if (carToRemove != null)
+            if (cars.Count == 0)
             {
-                cars.Remove(carToRemove);
-                Console.WriteLine("Car removed successfully!");
+                Console.WriteLine("No cars available to remove.");
+                return;
+            }
+
+            var models = cars.Select(car => car.Model).Distinct().ToList();
+
+            Console.WriteLine("Select a car model to remove:");
+            for (int i = 0; i < models.Count; i++)
+            {
+                Console.WriteLine($"{i + 1} : {models[i]}");
+            }
+            Console.Write("Enter the number corresponding to the model: ");
+            if (
+                int.TryParse(Console.ReadLine(), out int choice)
+                && choice > 0
+                && choice <= models.Count
+            )
+            {
+                string selectedModel = models[choice - 1];
+
+                cars.RemoveAll(car =>
+                    car.Model.Equals(selectedModel, StringComparison.OrdinalIgnoreCase)
+                );
+                Console.WriteLine($"All cars with model '{selectedModel}' have been removed.");
             }
             else
             {
-                Console.WriteLine("Car model not found.");
+                Console.WriteLine("Invalid selection. No car removed.");
             }
         }
     }
