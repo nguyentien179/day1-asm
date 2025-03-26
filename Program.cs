@@ -198,23 +198,27 @@ internal class Program
             {
                 Console.WriteLine($"{i + 1} : {models[i]}");
             }
-            Console.Write("Enter the number corresponding to the model: ");
-            if (
-                int.TryParse(Console.ReadLine(), out int choice)
-                && choice > 0
-                && choice <= models.Count
-            )
+            while (true)
             {
-                string selectedModel = models[choice - 1];
+                Console.Write("Enter the number corresponding to the model: ");
+                if (
+                    int.TryParse(Console.ReadLine(), out int choice)
+                    && choice > 0
+                    && choice <= models.Count
+                )
+                {
+                    string selectedModel = models[choice - 1];
 
-                cars.RemoveAll(car =>
-                    car.Model.Equals(selectedModel, StringComparison.OrdinalIgnoreCase)
-                );
-                Console.WriteLine($"All cars with model '{selectedModel}' have been removed.");
-            }
-            else
-            {
-                Console.WriteLine("Invalid selection. No car removed.");
+                    cars.RemoveAll(car =>
+                        car.Model.Equals(selectedModel, StringComparison.OrdinalIgnoreCase)
+                    );
+                    Console.WriteLine($"All cars with model '{selectedModel}' have been removed.");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid selection. No car removed.");
+                }
             }
         }
     }
