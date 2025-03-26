@@ -2,20 +2,12 @@ using System;
 
 namespace day1_asm;
 
-public class Car
+public class Car(string make, string model, int year, CarType type)
 {
-    public string Make { get; set; }
-    public string Model { get; set; }
-    public int Year { get; set; }
-    public CarType Type { get; set; }
-
-    public Car(string make, string model, int year, CarType type)
-    {
-        Make = make;
-        Model = model;
-        Year = year;
-        Type = type;
-    }
+    public string Make { get; set; } = make;
+    public string Model { get; set; } = model;
+    public int Year { get; set; } = year;
+    public CarType Type { get; set; } = type;
 
     public override string ToString()
     {
