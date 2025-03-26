@@ -1,4 +1,5 @@
 ﻿using day1_asm;
+using day1_asm.Helpers;
 
 internal class Program
 {
@@ -18,47 +19,58 @@ internal class Program
 
     private static void Main(string[] args)
     {
-        while (true)
+        try
         {
-            Console.WriteLine("\nCar Management System");
-            Console.WriteLine("1. Add a car");
-            Console.WriteLine("2. View all cars");
-            Console.WriteLine("3. Search car by Make");
-            Console.WriteLine("4. Filter cars by Type");
-            Console.WriteLine("5. Remove a car by Model");
-            Console.WriteLine("6. Exit");
-            Console.Write("Choose an option: ");
-
-            string choice = Console.ReadLine();
-            Console.WriteLine();
-
-            switch (choice)
+            while (true)
             {
-                case "1":
-                    AddCar();
-                    break;
-                case "2":
-                    ViewAllCars();
-                    break;
-                case "3":
-                    SearchCarByMake();
-                    break;
-                case "4":
-                    FilterCarByType();
-                    break;
-                case "5":
-                    RemoveCarByModel();
-                    break;
-                case "6":
-                    Console.WriteLine("Exiting... Goodbye!");
-                    return;
-                default:
-                    Console.WriteLine("Invalid choice. Please try again.");
-                    break;
+                Console.WriteLine("\nCar Management System");
+                Console.WriteLine("1. Add a car");
+                Console.WriteLine("2. View all cars");
+                Console.WriteLine("3. Search car by Make");
+                Console.WriteLine("4. Filter cars by Type");
+                Console.WriteLine("5. Remove a car by Model");
+                Console.WriteLine("6. Exit");
+                Console.Write("Choose an option: ");
+
+                string choice = Console.ReadLine();
+                Console.WriteLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        AddCar();
+                        break;
+                    case "2":
+                        ViewAllCars();
+                        break;
+                    case "3":
+                        SearchCarByMake();
+                        break;
+                    case "4":
+                        FilterCarByType();
+                        break;
+                    case "5":
+                        RemoveCarByModel();
+                        break;
+                    case "6":
+                        Console.WriteLine("Exiting... Goodbye!");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+                }
             }
         }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Main");
+            Console.WriteLine("An error occurred. Please try again.");
+        }
+    }
 
-        void AddCar()
+    static void AddCar()
+    {
+        try
         {
             string make = InputHelper.GetValidatedInput("Enter Make: ");
             string model = InputHelper.GetValidatedInput("Enter Model: ");
@@ -68,22 +80,38 @@ internal class Program
             cars.Add(new Car(make, model, year, type));
             Console.WriteLine("Car added successfully!");
         }
-
-        void ViewAllCars()
+        catch (Exception ex)
         {
-            if (cars.Count == 0)
-            {
-                Console.WriteLine("No cars available.");
-                return;
-            }
+            Logger.LogError(ex, "AddCar");
+            Console.WriteLine("An error occurred. Please try again.");
+        }
+    }
 
+    static void ViewAllCars()
+    {
+        if (cars.Count == 0)
+        {
+            Console.WriteLine("No cars available.");
+            return;
+        }
+
+        try
+        {
             foreach (var car in cars)
             {
                 Console.WriteLine(car);
             }
         }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "ViewAllCars");
+            Console.WriteLine("An error occurred. Please try again.");
+        }
+    }
 
-        void SearchCarByMake()
+    static void SearchCarByMake()
+    {
+        try
         {
             string make = InputHelper.GetValidatedInput("Enter Make to search: ");
             var results = cars.Where(car =>
@@ -103,8 +131,16 @@ internal class Program
                 }
             }
         }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "SearchCarByMake");
+            Console.WriteLine("An error occurred. Please try again.");
+        }
+    }
 
-        void FilterCarByType()
+    static void FilterCarByType()
+    {
+        try
         {
             Console.WriteLine("Select a car type:");
             CarType selectedType = InputHelper.GetValidatedCarType();
@@ -122,8 +158,16 @@ internal class Program
                 }
             }
         }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "FilterCarByType");
+            Console.WriteLine("An error occurred. Please try again.");
+        }
+    }
 
-        void RemoveCarByModel()
+    static void RemoveCarByModel()
+    {
+        try
         {
             if (cars.Count == 0)
             {
@@ -137,6 +181,11 @@ internal class Program
                 car.Model.Equals(selectedModel, StringComparison.OrdinalIgnoreCase)
             );
             Console.WriteLine($"All cars with model '{selectedModel}' have been removed.");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "RemoveCarByModel");
+            Console.WriteLine("An error occurred. Please try again.");
         }
     }
 }
