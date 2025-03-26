@@ -58,59 +58,18 @@ internal class Program
             }
         }
 
-        static void AddCar()
+        void AddCar()
         {
-            Console.Write("Enter Make: ");
-            string make = Console.ReadLine();
-
-            Console.Write("Enter Model: ");
-            string model = Console.ReadLine();
-
-            int year;
-            while (true)
-            {
-                Console.Write("Enter Year: ");
-                if (
-                    int.TryParse(Console.ReadLine(), out year)
-                    && year > 1885
-                    && year <= DateTime.Now.Year
-                )
-                {
-                    break;
-                }
-                Console.WriteLine(
-                    "Invalid year. Please enter a valid year between 1886 and the current year."
-                );
-            }
-
-            CarType type;
-            while (true)
-            {
-                Console.WriteLine("Select a car type:");
-                var carTypes = Enum.GetValues(typeof(CarType)).Cast<CarType>().ToList();
-                for (int i = 0; i < carTypes.Count; i++)
-                {
-                    Console.WriteLine($"{i + 1}. {carTypes[i]}");
-                }
-
-                Console.Write("Enter the number corresponding to the type: ");
-                if (
-                    int.TryParse(Console.ReadLine(), out int choice)
-                    && choice > 0
-                    && choice <= carTypes.Count
-                )
-                {
-                    type = carTypes[choice - 1];
-                    break;
-                }
-                Console.WriteLine("Invalid selection. Please try again.");
-            }
+            string make = InputHelper.GetValidatedInput("Enter Make: ");
+            string model = InputHelper.GetValidatedInput("Enter Model: ");
+            int year = InputHelper.GetValidatedYear();
+            CarType type = InputHelper.GetValidatedCarType();
 
             cars.Add(new Car(make, model, year, type));
             Console.WriteLine("Car added successfully!");
         }
 
-        static void ViewAllCars()
+        void ViewAllCars()
         {
             if (cars.Count == 0)
             {
@@ -124,10 +83,9 @@ internal class Program
             }
         }
 
-        static void SearchCarByMake()
+        void SearchCarByMake()
         {
-            Console.Write("Enter Make to search: ");
-            string make = Console.ReadLine();
+            string make = InputHelper.GetValidatedInput("Enter Make to search: ");
             var results = cars.Where(car =>
                     car.Make.IndexOf(make, StringComparison.OrdinalIgnoreCase) >= 0
                 )
@@ -146,44 +104,26 @@ internal class Program
             }
         }
 
-        static void FilterCarByType()
+        void FilterCarByType()
         {
             Console.WriteLine("Select a car type:");
-            var carTypes = Enum.GetValues(typeof(CarType)).Cast<CarType>().ToList();
-            for (int i = 0; i < carTypes.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {carTypes[i]}");
-            }
+            CarType selectedType = InputHelper.GetValidatedCarType();
 
-            Console.Write("Enter the number corresponding to the type: ");
-            if (
-                int.TryParse(Console.ReadLine(), out int choice)
-                && choice > 0
-                && choice <= carTypes.Count
-            )
+            var results = cars.Where(car => car.Type == selectedType).ToList();
+            if (results.Count == 0)
             {
-                CarType selectedType = carTypes[choice - 1];
-                var results = cars.Where(car => car.Type == selectedType).ToList();
-
-                if (results.Count == 0)
-                {
-                    Console.WriteLine("No cars found for this type.");
-                }
-                else
-                {
-                    foreach (var car in results)
-                    {
-                        Console.WriteLine(car);
-                    }
-                }
+                Console.WriteLine("No cars found for this type.");
             }
             else
             {
-                Console.WriteLine("Invalid selection. Please try again.");
+                foreach (var car in results)
+                {
+                    Console.WriteLine(car);
+                }
             }
         }
 
-        static void RemoveCarByModel()
+        void RemoveCarByModel()
         {
             if (cars.Count == 0)
             {
@@ -191,35 +131,12 @@ internal class Program
                 return;
             }
 
-            var models = cars.Select(car => car.Model).Distinct().ToList();
+            string selectedModel = InputHelper.GetValidatedCarModel(cars);
 
-            Console.WriteLine("Select a car model to remove:");
-            for (int i = 0; i < models.Count; i++)
-            {
-                Console.WriteLine($"{i + 1} : {models[i]}");
-            }
-            while (true)
-            {
-                Console.Write("Enter the number corresponding to the model: ");
-                if (
-                    int.TryParse(Console.ReadLine(), out int choice)
-                    && choice > 0
-                    && choice <= models.Count
-                )
-                {
-                    string selectedModel = models[choice - 1];
-
-                    cars.RemoveAll(car =>
-                        car.Model.Equals(selectedModel, StringComparison.OrdinalIgnoreCase)
-                    );
-                    Console.WriteLine($"All cars with model '{selectedModel}' have been removed.");
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid selection. No car removed.");
-                }
-            }
+            cars.RemoveAll(car =>
+                car.Model.Equals(selectedModel, StringComparison.OrdinalIgnoreCase)
+            );
+            Console.WriteLine($"All cars with model '{selectedModel}' have been removed.");
         }
     }
 }
